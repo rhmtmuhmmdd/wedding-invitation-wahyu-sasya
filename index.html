@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Pernikahan Wahyu & Sasya</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Playfair+Display:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        :root {
+            --pink-pastel: #f8d7da;
+            --pink-light: #fce4e7;
+            --pink-medium: #f5c2c7;
+            --blue-pastel: #d1e7f0;
+            --blue-light: #e3f2f9;
+            --blue-medium: #b8dae8;
+            --gold: #d4af37;
+            --gold-light: #f5e6c8;
+            --dark-text: #3a3a3a;
+            --soft-white: #fdfcfb;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            color: var(--dark-text);
+            overflow-x: hidden;
+            background: linear-gradient(135deg, var(--pink-light) 0%, var(--blue-light) 100%);
+        }
+        
+        /* Sampul Undangan */
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--pink-pastel) 0%, var(--blue-pastel) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        #cover.hidden {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+        
+        .cover-content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+            animation: fadeInUp 1.2s ease;
+        }
+        
+        .ornament-top {
+            width: 120px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            opacity: 0.7;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .bismillah {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--dark-text);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .the-wedding {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+        }
+        
+        .couple-names {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--pink-medium), var(--blue-medium));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 1rem 0;
+            line-height: 1.2;
+        }
+        
+        .ampersand {
+            font-size: 3rem;
+            opacity: 0.6;
+        }
+        
+        .wedding-date {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.3rem;
+            margin: 2rem 0;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+        
+        .open-button {
+            background: linear-gradient(135deg, var(--pink-medium), var(--blue-medium));
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-family: 'Crimson Text', serif;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .open-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .open-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .open-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Main Content */
+        #main-content {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            pointer-events: none;
+        }
+        
+        #main-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        
+        /* Music Control */
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--pink-medium), var(--blue-medium));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 999;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        .music-control.visible {
+            opacity: 1;
+        }
+        
+        .music-control:hover {
+            transform: scale(1.1);
+        }
+        
+        .music-control svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+        
+        /* Header Section */
+        .header-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--soft-white) 0%, var(--pink-light) 50%, var(--blue-light) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        
+        .header-content {
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .islamic-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            line-height: 1.8;
+            color: var(--dark-text);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+        
+        .arabic-text {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            direction: rtl;
+        }
+        
+        .divider {
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 2rem auto;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.6s forwards;
+        }
+        
+        .invitation-text {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--dark-text);
+            margin: 2rem 0;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.9s forwards;
+        }
+        
+        /* Event Details */
+        .event-section {
+            padding: 5rem 2rem;
+            background: var(--soft-white);
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--dark-text);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--pink-medium), var(--blue-medium));
+            margin: 1rem auto;
+        }
+        
+        .event-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .event-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .event-card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+        }
+        
+        .event-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--pink-light), var(--blue-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .event-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-text);
+            text-align: center;
+        }
+        
+        .event-info {
+            text-align: center;
+            margin: 0.8rem 0;
+            font-size: 1.1rem;
+            color: var(--dark-text);
+        }
+        
+        .event-info strong {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: var(--pink-medium);
+            font-weight: 600;
+        }
+        
+        .map-button {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--pink-medium), var(--blue-medium));
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+        }
+        
+        .map-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* Gallery Section */
+        .gallery-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--pink-light) 0%, var(--blue-light) 100%);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            aspect-ratio: 4/5;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+        }
+        
+        .gallery-item.animate {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(248,215,218,0.3), rgba(209,231,240,0.3));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+        
+        .gallery-item:hover::before {
+            opacity: 1;
+        }
+        
+        /* Footer */
+        .footer-section {
+            padding: 3rem 2rem;
+            background: var(--soft-white);
+            text-align: center;
+        }
+        
+        .closing-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--dark-text);
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-names {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--pink-medium), var(--blue-medium));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 1rem 0;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .couple-names {
+                font-size: 2.5rem;
+            }
+            
+            .bismillah {
+                font-size: 1.3rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .event-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+            
+            .music-control {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .couple-names {
+                font-size: 2rem;
+            }
+            
+            .open-button {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+            
+            .islamic-quote {
+                font-size: 1.2rem;
+            }
+            
+            .arabic-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cover Page -->
+    <div id="cover">
+        <div class="cover-content">
+            <div class="ornament-top"></div>
+            <p class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</p>
+            <p class="the-wedding">THE WEDDING OF</p>
+            <h1 class="couple-names">
+                Wahyu <span class="ampersand">&</span> Sasya
+            </h1>
+            <p class="wedding-date">Minggu, 15 Maret 2026</p>
+            <button class="open-button" id="openBtn">
+                <span style="position: relative; z-index: 1;">Buka Undangan</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Music Control -->
+    <div class="music-control" id="musicControl">
+        <svg id="playIcon" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg id="pauseIcon" style="display:none;" viewBox="0 0 24 24">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+        </svg>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="weddingMusic" loop>
+        <source src="WeddingMusik.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Header Section -->
+        <section class="header-section">
+            <div class="header-content">
+                <div class="islamic-quote">
+                    <p class="arabic-text">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا</p>
+                    <p>"Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya."</p>
+                    <p style="font-size: 1.1rem; margin-top: 0.5rem; opacity: 0.8;">(QS. Ar-Rum: 21)</p>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="invitation-text">
+                    <p style="margin-bottom: 1.5rem;">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
+                    <p style="margin-bottom: 1.5rem;">Dengan memohon rahmat dan ridho Allah Subhanahu Wa Ta'ala, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami:</p>
+                    <h2 class="couple-names" style="font-size: 2.5rem; margin: 2rem 0;">
+                        Wahyu <span class="ampersand" style="font-size: 2rem;">&</span> Sasya
+                    </h2>
+                    <p>Yang InsyaAllah akan diselenggarakan pada:</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Event Details Section -->
+        <section class="event-section">
+            <h2 class="section-title">Detail Acara</h2>
+            <div class="event-cards">
+                <div class="event-card">
+                    <div class="event-icon">💍</div>
+                    <h3 class="event-title">Akad Nikah</h3>
+                    <div class="event-info">
+                        <strong>Hari & Tanggal</strong>
+                        <p>Minggu, 15 Maret 2026</p>
+                    </div>
+                    <div class="event-info">
+                        <strong>Waktu</strong>
+                        <p>08.00 WIB - Selesai</p>
+                    </div>
+                    <div class="event-info">
+                        <strong>Tempat</strong>
+                        <p>Masjid Agung Al-Ikhlas<br>Jl. Merdeka No. 123, Jakarta Pusat</p>
+                    </div>
+                    <a href="https://maps.google.com/?q=Masjid+Agung" target="_blank" class="map-button">
+                        📍 Buka Alamat
+                    </a>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-icon">🎉</div>
+                    <h3 class="event-title">Resepsi</h3>
+                    <div class="event-info">
+                        <strong>Hari & Tanggal</strong>
+                        <p>Minggu, 15 Maret 2026</p>
+                    </div>
+                    <div class="event-info">
+                        <strong>Waktu</strong>
+                        <p>11.00 - 14.00 WIB</p>
+                    </div>
+                    <div class="event-info">
+                        <strong>Tempat</strong>
+                        <p>Gedung Serbaguna Mulia<br>Jl. Harmoni No. 456, Jakarta Pusat</p>
+                    </div>
+                    <a href="https://maps.google.com/?q=Gedung+Serbaguna+Mulia" target="_blank" class="map-button">
+                        📍 Buka Alamat
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="gallery-section">
+            <h2 class="section-title">Sedikit Dari Kami</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="Foto01.jpg" alt="Wahyu & Sasya 1" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22%3E%3Crect fill=%22%23f8d7da%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22serif%22 font-size=%2224%22 fill=%22%233a3a3a%22%3EFoto 1%3C/text%3E%3C/svg%3E'">
+                </div>
+                <div class="gallery-item">
+                    <img src="Foto02.jpg" alt="Wahyu & Sasya 2" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22%3E%3Crect fill=%22%23d1e7f0%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22serif%22 font-size=%2224%22 fill=%22%233a3a3a%22%3EFoto 2%3C/text%3E%3C/svg%3E'">
+                </div>
+                <div class="gallery-item">
+                    <img src="Foto03.jpg" alt="Wahyu & Sasya 3" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22%3E%3Crect fill=%22%23fce4e7%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22serif%22 font-size=%2224%22 fill=%22%233a3a3a%22%3EFoto 3%3C/text%3E%3C/svg%3E'">
+                </div>
+                <div class="gallery-item">
+                    <img src="Foto04.jpg" alt="Wahyu & Sasya 4" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22%3E%3Crect fill=%22%23e3f2f9%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22serif%22 font-size=%2224%22 fill=%22%233a3a3a%22%3EFoto 4%3C/text%3E%3C/svg%3E'">
+                </div>
+                <div class="gallery-item">
+                    <img src="Foto05.jpg" alt="Wahyu & Sasya 5" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22%3E%3Crect fill=%22%23f5c2c7%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22serif%22 font-size=%2224%22 fill=%22%233a3a3a%22%3EFoto 5%3C/text%3E%3C/svg%3E'">
+                </div>
+                <div class="gallery-item">
+                    <img src="Foto06.jpg" alt="Wahyu & Sasya 6" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22%3E%3Crect fill=%22%23b8dae8%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22serif%22 font-size=%2224%22 fill=%22%233a3a3a%22%3EFoto 6%3C/text%3E%3C/svg%3E'">
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Section -->
+        <section class="footer-section">
+            <p class="closing-text">
+                "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untuk kalian pasangan dari jenis kalian sendiri, supaya kalian cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya di antara kalian rasa kasih dan sayang."
+            </p>
+            <div class="divider" style="animation: none; opacity: 0.5;"></div>
+            <p class="footer-names">Wahyu & Sasya</p>
+            <p style="margin-top: 2rem; font-style: italic; color: var(--dark-text); opacity: 0.7;">
+                Wassalamu'alaikum Warahmatullahi Wabarakatuh
+            </p>
+            <p style="margin-top: 3rem; font-size: 0.9rem; opacity: 0.5;">
+                © 2026 Wahyu & Sasya Wedding
+            </p>
+        </section>
+    </div>
+
+    <script>
+        // Elements
+        const cover = document.getElementById('cover');
+        const openBtn = document.getElementById('openBtn');
+        const mainContent = document.getElementById('main-content');
+        const weddingMusic = document.getElementById('weddingMusic');
+        const musicControl = document.getElementById('musicControl');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        
+        let isPlaying = false;
+
+        // Open Invitation
+        openBtn.addEventListener('click', () => {
+            // Hide cover
+            cover.classList.add('hidden');
+            
+            // Show main content
+            setTimeout(() => {
+                mainContent.classList.add('visible');
+                musicControl.classList.add('visible');
+            }, 300);
+            
+            // Play music
+            setTimeout(() => {
+                weddingMusic.play().then(() => {
+                    isPlaying = true;
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                }).catch(error => {
+                    console.log('Autoplay prevented:', error);
+                });
+            }, 800);
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        });
+
+        // Music Control
+        musicControl.addEventListener('click', () => {
+            if (isPlaying) {
+                weddingMusic.pause();
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+                isPlaying = false;
+            } else {
+                weddingMusic.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+                isPlaying = true;
+            }
+        });
+
+        // Scroll Animations
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, observerOptions);
+
+        // Observe event cards
+        document.querySelectorAll('.event-card').forEach((card, index) => {
+            card.style.transitionDelay = `${index * 0.2}s`;
+            observer.observe(card);
+        });
+
+        // Observe gallery items
+        document.querySelectorAll('.gallery-item').forEach((item, index) => {
+            item.style.transitionDelay = `${index * 0.1}s`;
+            observer.observe(item);
+        });
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add parallax effect to header
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const headerSection = document.querySelector('.header-section');
+            if (headerSection && scrolled < window.innerHeight) {
+                headerSection.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
+</body>
+  </html>
